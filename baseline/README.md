@@ -24,21 +24,16 @@ Project Structure
 
 text
 Apartment_Energy_Simulator/
-│
-├── baseline/                    # Core energy model package
-│   ├── __init__.py
-│   ├── apartment.py            # Apartment thermal properties
-│   ├── energy_classes.py       # Appliance classes
-│   └── outdoor_temps.py        # Outdoor temperature generator
-│
-├── automation/                  # Future ESP-32 simulation (coming soon)
-│   └── ...
-│
-├── energy_simulation.py         # Main simulation runner
-└── README.md
-Sample Output
-
-text
+- baseline/                    # Core energy model package
+  - init__.py
+  - apartment.py            # Apartment thermal properties
+  - energy_classes.py       # Appliance classes
+  - outdoor_temps.py        # Outdoor temperature generator
+- automation/                  # Future ESP-32 simulation (coming soon)
+  - energy_simulation.py         # Main simulation runner
+  - 
+README.md
+Sample Output:
 HVAC energy: 2127 kWh
 Appliance energy: 2532 kWh
 Total annual energy: 4660 kWh
@@ -64,16 +59,15 @@ Expected Result
 
 After adding ESP-32 automation, the simulation is expected to reduce total annual energy by approximately 15-25% , saving the resident 
 200
-–
+
 200–300 per year.
 
 Requirements
 
 Python 3.9+
 No external dependencies required (uses only standard library)
-How to Run
 
-bash
+How to Run
 python energy_simulation.py
 Acknowledgments
 
