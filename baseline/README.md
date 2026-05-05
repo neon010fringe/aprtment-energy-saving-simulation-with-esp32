@@ -22,16 +22,15 @@ Phantom loads (idle devices)
 Cost calculation – Uses NYC electricity rate of $0.31 per kWh (May 2026 data).
 Project Structure
 
-text
 Apartment_Energy_Simulator/
 - baseline/                    # Core energy model package
-  - init__.py
-  - apartment.py            # Apartment thermal properties
-  - energy_classes.py       # Appliance classes
-  - outdoor_temps.py        # Outdoor temperature generator
+  - apartment.py               # Apartment thermal properties
+  - energy_classes.py          # Appliance classes
+  - outdoor_temps.py           # Outdoor temperature generator
 - automation/                  # Future ESP-32 simulation (coming soon)
-  - energy_simulation.py         # Main simulation runner
-  - 
+  - energy_simulation.py       # Main simulation runner
+
+
 README.md
 Sample Output:
 HVAC energy: 2127 kWh
