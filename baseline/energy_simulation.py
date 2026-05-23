@@ -2,10 +2,12 @@ from annual_outdoor_ave_temps_nyc import get_outdoor_temps
 from apartment import Apartment
 from energy_classes import WaterHeater, Refrigerator, Lighting, Electronics, Cooking, PhantomLoads
 from smart_thermostat import DumbThermostat, SmartThermostat
+from baseline.sensor_reader import get_real_temp_or_default
 
 
 def c_to_f(c):
     return (c * 9 / 5) + 32
+
 
 def daily_energy_kwh(apartment, t_outside_c):
     t_outside_f = c_to_f(t_outside_c)
@@ -23,7 +25,16 @@ def daily_energy_kwh(apartment, t_outside_c):
     kwh_per_day = (ua * delta_f * 24) / 3412
     return kwh_per_day
 
+
 def main():
+    # ── REAL SENSOR READING ──────────────────────────────────────────
+    # Reads live temperature from your DS18B20 via ESP32.
+    # If ESP32 isn't connected, falls back to 20.0°C automatically.
+    real_indoor_temp_c = get_real_temp_or_default(default_c=20.0)
+    print(f"\nSimulation starting indoor temp: {real_indoor_temp_c}°C "
+          f"/ {c_to_f(real_indoor_temp_c):.1f}°F (from DS18B20)\n")
+    # ─────────────────────────────────────────────────────────────────
+
     apt = Apartment(area_m2=91.44, wall_r=30, ceiling_r=49, window_u=0.27, window_area_sqft=20)
     all_temps = get_outdoor_temps()
 
@@ -40,7 +51,7 @@ def main():
     cooking = Cooking()
     phantom = PhantomLoads()
     appliance_kwh = (water_heater.annual_kwh() + fridge.annual_kwh() + lights.annual_kwh() +
-                      electronics.annual_kwh() + cooking.annual_kwh() + phantom.annual_kwh())
+                     electronics.annual_kwh() + cooking.annual_kwh() + phantom.annual_kwh())
 
     total_kwh = hvac_kwh + appliance_kwh
     annual_cost = total_kwh * 0.284
@@ -55,13 +66,16 @@ def main():
     print("SMART THERMOSTAT COMPARISON")
     print("=" * 50)
 
+    # Pass real indoor temp as starting point for both thermostats
     dumb = DumbThermostat(apt)
+    dumb.indoor_temp_c = real_indoor_temp_c        # ← real sensor reading
     for temp_c in all_temps:
         for hour in range(24):
             dumb.run_hour(temp_c)
     dumb_energy = dumb.total_kwh()
 
     smart = SmartThermostat(apt)
+    smart.indoor_temp_c = real_indoor_temp_c       # ← real sensor reading
     for day, temp_c in enumerate(all_temps):
         day_of_week = day % 7
         is_weekend = (day_of_week >= 5)
@@ -85,7 +99,7 @@ def main():
     print(f"Original simplified HVAC:    {hvac_kwh:.0f} kWh")
     print(f"Realistic dumb thermostat:   {dumb_energy:.0f} kWh")
     print(f"Realistic smart thermostat:  {smart_energy:.0f} kWh")
-    print(f"\nSmart vs Dumb savings:       {savings:.0f} kWh ({savings/dumb_energy*100:.1f}%)")
+    print(f"\nSmart vs Dumb savings:       {savings:.0f} kWh ({savings / dumb_energy * 100:.1f}%)")
     print(f"Annual cost savings:         ${savings * 0.284:.2f}")
     print("\nPROVEN: Smart thermostat saves energy while maintaining comfort")
 

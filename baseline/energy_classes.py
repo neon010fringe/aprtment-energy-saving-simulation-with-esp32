@@ -81,3 +81,6 @@ class PhantomLoads:
 # from devices that draw power even when turned off. Each class calculates how many kilowatt-hours of electricity it
 # uses over a full year based on typical usage patterns and settings like shower frequency or hours of TV watched. These
 # annual energy values can then be added together to estimate a household's total electricity consumption and cost.
+
+# Lighting / TV should be automated via microcontroller because people like myself often fall asleep for many hours having
+# left the lights on, and also not noticing they are on during the day when the sunlight is present.
